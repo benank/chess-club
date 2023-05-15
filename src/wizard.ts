@@ -4,6 +4,8 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
 import AnonymizeUAPlugin from "puppeteer-extra-plugin-anonymize-ua";
 import { getChessGame } from "./wizard-utils";
+import Client from "./client";
+import { SYNC_ONLINE_BOARD_STATE } from "./events";
 puppeteer
     .use(StealthPlugin())
     .use(
@@ -14,6 +16,8 @@ puppeteer
     )
     .use(AnonymizeUAPlugin());
 dotenv.config();
+
+const client = new Client("wizard");
 
 (async () => {
     const browser = await puppeteer.launch({
@@ -62,14 +66,12 @@ dotenv.config();
 
     await page.goto("https://www.chess.com/play/online");
 
-    await new Promise((res) => setTimeout(() => res(null), 10000));
-
     setInterval(async () => {
-        const chess = await getChessGame(page);
-        console.log(chess.fen());
-    }, 1000)
-
-    await new Promise((res) => setTimeout(() => res(null), 50000));
-
-    await browser.close();
+        try {
+            const chess = await getChessGame(page);
+            client.send(SYNC_ONLINE_BOARD_STATE, chess.fen());
+        } catch (err) {
+            console.log(`Error when refreshing chess game:`, err);
+        }
+    }, 1000);
 })();

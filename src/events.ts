@@ -1,0 +1,1 @@
+export const SYNC_ONLINE_BOARD_STATE = 'wizard/sync_online'

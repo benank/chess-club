@@ -17,11 +17,11 @@ export default class Client {
         this._log = console.log.bind(console, `[Client: ${this._name}] `);
 
         this._socket.io.on("open", () => {
-            this._log(`open`);
+            this._log(`Connected!`);
         });
 
         this._socket.io.on("error", (err: Error) => {
-            this._log(`error: `, err);
+            this._log(`Error: `, err);
         });
 
         this._socket.io.on(
@@ -30,13 +30,13 @@ export default class Client {
                 reason: string,
                 description?: DisconnectDescription | undefined
             ) => {
-                this._log(`close ${reason}`, description);
+                this._log(`Disconnected ${reason}`, description);
             }
         );
 
-        this._socket.on("testfunc", (args: any) => {
-            this._log(`got data test func `, args);
-        });
+        // this._socket.on("testfunc", (args: any) => {
+        //     this._log(`got data test func `, args);
+        // });
     }
 
     send(event: string, data: any) {
