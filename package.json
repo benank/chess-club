@@ -1,0 +1,26 @@
+{
+  "name": "wizard",
+  "version": "1.0.0",
+  "scripts": {
+    "start:wizard": "npx vite-node src/index.ts",
+    "start:server": "npx vite-node src/server.ts",
+    "start:client": "npx vite-node src/client.ts"
+  },
+  "author": "benank",
+  "dependencies": {
+    "chess.js": "^1.0.0-beta.5",
+    "dotenv": "^16.0.3",
+    "puppeteer": "^20.2.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-adblocker": "^2.13.6",
+    "puppeteer-extra-plugin-anonymize-ua": "^2.4.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "socket.io": "^4.6.1",
+    "socket.io-client": "^4.6.1"
+  },
+  "devDependencies": {
+    "@types/chess.js": "^0.13.4",
+    "@types/puppeteer": "^7.0.4",
+    "@types/socket.io": "^3.0.2"
+  }
+}
