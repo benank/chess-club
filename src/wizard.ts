@@ -3,8 +3,7 @@ import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
 import AnonymizeUAPlugin from "puppeteer-extra-plugin-anonymize-ua";
-import { Page } from "puppeteer";
-import { getMyTime, getOpponentTime } from "./utils";
+import { getChessGame } from "./wizard-utils";
 puppeteer
     .use(StealthPlugin())
     .use(
@@ -63,7 +62,14 @@ dotenv.config();
 
     await page.goto("https://www.chess.com/play/online");
 
-    await new Promise((res) => setTimeout(() => res(null), 5000));
+    await new Promise((res) => setTimeout(() => res(null), 10000));
+
+    setInterval(async () => {
+        const chess = await getChessGame(page);
+        console.log(chess.fen());
+    }, 1000)
+
+    await new Promise((res) => setTimeout(() => res(null), 50000));
 
     await browser.close();
 })();
