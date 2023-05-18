@@ -23,7 +23,7 @@ export default class Client {
         this._socket.io.on("error", (err: Error) => {
             this._log(`Error: `, err);
         });
-
+        
         this._socket.io.on(
             "close",
             (
@@ -39,7 +39,11 @@ export default class Client {
         // });
     }
 
-    send(event: string, data: any) {
+    send(event: string, data?: any) {
         this._socket.emit(event, data);
+    }
+    
+    on(ev: string, listener: (...args: any[]) => void) {
+        this._socket.on(ev, listener);
     }
 }
