@@ -5,7 +5,8 @@
     "start:server": "npx vite-node src/server.ts",
     "start:wizard": "npx vite-node src/wizard.ts",
     "start:tron": "npx vite-node src/tron.ts",
-    "start:voice": "npx vite-node src/voice.ts"
+    "start:voice": "npx vite-node src/voice.ts",
+    "start:frontend": "cd chess-frontend && npm run dev"
   },
   "author": "benank",
   "dependencies": {
