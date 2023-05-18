@@ -46,7 +46,7 @@ const leopard = new Leopard(accessKey!, {
 
 const processAudio = () => {
     const { transcript, words } = leopard.processFile(FILENAME);
-    const move = words
+    let move = words
         .map(
             (w) =>
                 WORD_TO_CHESS_MAP[w.word.toLowerCase()] || w.word.toLowerCase()
@@ -54,6 +54,13 @@ const processAudio = () => {
         .join("")
         .replace("88", "a8")
         .replace("aa", "a8");
+
+    if (transcript.trim().toLowerCase() == "queen side castle") {
+        move = "O-O-O";
+    } else if (transcript.trim().toLowerCase() == "king side castle") {
+        move = "O-O";
+    }
+
     console.log(move);
     client.send(PHYSICAL_MAKE_MOVE, move);
     fs.unlinkSync(FILENAME);
