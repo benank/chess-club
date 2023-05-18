@@ -3,9 +3,17 @@ import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
 import AnonymizeUAPlugin from "puppeteer-extra-plugin-anonymize-ua";
-import { getChessGame } from "./wizard-utils";
+import {
+    getChessGame,
+    getIsMyTurn,
+    getMySide,
+    getMyTime,
+    getOpponentTime,
+    getOtherSide,
+} from "./wizard-utils";
 import Client from "./client";
 import { SYNC_ONLINE_BOARD_STATE } from "./events";
+import { WizardGameState } from "./models";
 puppeteer
     .use(StealthPlugin())
     .use(
@@ -29,7 +37,7 @@ const client = new Client("wizard");
             "--no-sandbox",
             "--disable-setuid-sandbox",
             "--disable-notifications",
-            "--window-size=1280,724",
+            "--window-size=1280,1024",
             "--ignore-certifcate-errors",
             "--ignore-certifcate-errors-spki-list",
         ],
@@ -42,7 +50,7 @@ const client = new Client("wizard");
     await page.goto("https://www.chess.com/login");
 
     // // Set screen size
-    await page.setViewport({ width: 1280, height: 724 });
+    await page.setViewport({ width: 1280, height: 1024 });
 
     // // Type into search box
     await page.type("#username", process.env.CHESS_USERNAME ?? "");
@@ -69,7 +77,22 @@ const client = new Client("wizard");
     setInterval(async () => {
         try {
             const chess = await getChessGame(page);
-            client.send(SYNC_ONLINE_BOARD_STATE, chess.fen());
+            const mySide = await getMySide(page);
+            const sideTurn = (await getIsMyTurn(page))
+                ? mySide
+                : getOtherSide(mySide);
+            client.send(
+                SYNC_ONLINE_BOARD_STATE,
+                JSON.stringify(<WizardGameState>{
+                    // Replace "w" in the fen with the actual side who's turn it is
+                    fen: chess.fen().replace("w", sideTurn),
+                    mySide: mySide,
+                    time: {
+                        mine: await getMyTime(page),
+                        opponent: await getOpponentTime(page),
+                    },
+                })
+            );
         } catch (err) {
             console.log(`Error when refreshing chess game:`, err);
         }

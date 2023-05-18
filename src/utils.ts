@@ -1,11 +1,6 @@
-import { Page } from "puppeteer";
+import { Chess, Move } from "chess.js";
 
-export const getOpponentTime = async (page: Page): Promise<string> => {
-    const usernameSelector = await page.waitForSelector("div.clock-component.clock-top > span.clock-time-monospace");
-    return await usernameSelector?.evaluate((el) => el.textContent) ?? '';
-}
-
-export const getMyTime = async (page: Page): Promise<string> => {
-    const usernameSelector = await page.waitForSelector("div.clock-component.clock-bottom > span.clock-time-monospace");
-    return await usernameSelector?.evaluate((el) => el.textContent) ?? '';
-}
+export const getLastMove = (chess: Chess): Move | null => {
+    const history = chess.history({ verbose: true });
+    return history.length > 0 ? history[history.length - 1] : null;
+};

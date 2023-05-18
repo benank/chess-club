@@ -1,5 +1,6 @@
 import { Chess, Piece, Square } from "chess.js";
 import { Page } from "puppeteer";
+import { Side } from "./models";
 
 export const numberToLowerCaseLetter = (number: number) =>
     String.fromCharCode("a".charCodeAt(0) + number - 1);
@@ -35,4 +36,50 @@ export const getChessGame = async (page: Page): Promise<Chess> => {
     }
 
     return chess;
+};
+
+export const getOpponentTime = async (page: Page): Promise<string> => {
+    const usernameSelector = await page.waitForSelector(
+        "div.clock-component.clock-top > span.clock-time-monospace"
+    );
+    return (await usernameSelector?.evaluate((el) => el.textContent)) ?? "";
+};
+
+export const getMyTime = async (page: Page): Promise<string> => {
+    const usernameSelector = await page.waitForSelector(
+        "div.clock-component.clock-bottom > span.clock-time-monospace"
+    );
+    return (await usernameSelector?.evaluate((el) => el.textContent)) ?? "";
+};
+
+export const getMySide = async (page: Page): Promise<Side> => {
+    const sideElements = await page.$$("div.clock-component.clock-bottom");
+    let side: Side = "w";
+
+    for (const element of sideElements) {
+        const classNameProp = await element.getProperty("className");
+        const className = await classNameProp.jsonValue();
+        const classNames = className.split(" ");
+        side = classNames.includes("clock-white") ? "w" : "b";
+    }
+
+    return side;
+};
+
+export const getOtherSide = (side: Side): Side => {
+    return side == 'w' ? 'b' : 'w';
+}
+
+export const getIsMyTurn = async (page: Page): Promise<boolean> => {
+    const sideElements = await page.$$("div.clock-component.clock-bottom");
+    let isMyTurn = false;
+
+    for (const element of sideElements) {
+        const classNameProp = await element.getProperty("className");
+        const className = await classNameProp.jsonValue();
+        const classNames = className.split(" ");
+        isMyTurn = classNames.includes("clock-player-turn");
+    }
+
+    return isMyTurn;
 };
