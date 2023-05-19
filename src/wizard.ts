@@ -4,7 +4,8 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
 import AnonymizeUAPlugin from "puppeteer-extra-plugin-anonymize-ua";
 import {
-    getChessGame,
+    getChessGameFEN,
+    getChessGamePGN,
     getIsMyTurn,
     getMySide,
     getMyTime,
@@ -76,16 +77,16 @@ const client = new Client("wizard");
 
     setInterval(async () => {
         try {
-            const chess = await getChessGame(page);
+            const chess = await getChessGamePGN(page);
             const mySide = await getMySide(page);
             const sideTurn = (await getIsMyTurn(page))
                 ? mySide
                 : getOtherSide(mySide);
+            await getChessGamePGN(page);
             client.send(
                 SYNC_ONLINE_BOARD_STATE,
                 JSON.stringify(<WizardGameState>{
-                    // Replace "w" in the fen with the actual side who's turn it is
-                    fen: chess.fen().replace("w", sideTurn),
+                    pgn: chess.pgn(),
                     mySide: mySide,
                     time: {
                         mine: await getMyTime(page),

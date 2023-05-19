@@ -59,8 +59,9 @@ class Server {
     @performanceCatch
     private onOnlineBoardSync(gameStateStr: string) {
         const gameState = JSON.parse(gameStateStr) as WizardGameState;
-        this._onlineGameState = new Chess(gameState.fen);
-        this._log(this._onlineGameState.fen());
+        this._onlineGameState = new Chess();
+        this._onlineGameState.loadPgn(gameState.pgn);
+        this._log(this._onlineGameState.pgn());
         this._mySide = gameState.mySide;
         this._time = gameState.time;
         this.sync();
@@ -68,9 +69,10 @@ class Server {
 
     @performanceCatch
     private onPhysicalGameMakeMove(move: string) {
-        const board = new Chess(this._onlineGameState.fen());
+        const board = new Chess();
+        board.loadPgn(this._onlineGameState.pgn());
         try {
-            // TODO: move piece (eg. Q or n is case sensitive - need to determine what side I am)
+            // TODO: move piece
             const moveObject = board.move(move);
             // No errors = valid move
             this._isLastMoveInvalid = false;
@@ -78,7 +80,7 @@ class Server {
             console.log(`onPhysicalGameMakeMove err: `, err);
             this._isLastMoveInvalid = true;
             this.sync();
-            
+
             setTimeout(() => {
                 this._isLastMoveInvalid = false;
                 this.sync();
@@ -97,11 +99,11 @@ class Server {
         this._isRecording = false;
         this.sync();
     }
-    
+
     @performanceCatch
     private getGameState(): GameState {
         return {
-            fen: this._onlineGameState.fen(),
+            pgn: this._onlineGameState.pgn(),
             isRecording: this._isRecording,
             isLastMoveInvalid: this._isLastMoveInvalid,
             mySide: this._mySide,

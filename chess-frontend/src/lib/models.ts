@@ -1,7 +1,7 @@
 export type Side = 'b' | 'w';
 
 export interface GameState {
-	fen: string;
+	pgn: string;
 	isRecording: boolean;
 	isLastMoveInvalid: boolean;
 	mySide: Side;
@@ -14,7 +14,7 @@ export interface Time {
 }
 
 export interface WizardGameState {
-	fen: string;
+	pgn: string;
 	time: Time;
 	mySide: Side;
 }

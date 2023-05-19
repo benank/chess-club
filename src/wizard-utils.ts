@@ -5,7 +5,48 @@ import { Side } from "./models";
 export const numberToLowerCaseLetter = (number: number) =>
     String.fromCharCode("a".charCodeAt(0) + number - 1);
 
-export const getChessGame = async (page: Page): Promise<Chess> => {
+export const getChessGamePGN = async (page: Page): Promise<Chess> => {
+    const chess = new Chess();
+
+    const moves = await page.$$(
+        "vertical-move-list.move-list-wrapper-component > div.move"
+    );
+
+    const sideSelectors = ["white", "black"];
+
+    for (const move of moves) {
+        for (const sideSelector of sideSelectors) {
+            const moveHandles = await move.$$(`div.${sideSelector}.node`);
+            if (moveHandles.length !== 1) {
+                return chess;
+            }
+
+            const moveHandle = moveHandles[0];
+            const movePosition = await page.evaluate(
+                (element) => element.innerText,
+                moveHandle
+            );
+            const pieceSpan = await moveHandle.$$("span");
+            let piece = "";
+
+            if (pieceSpan.length === 1) {
+                piece =
+                    (await page.evaluate(
+                        (element) => element.getAttribute("data-figurine"),
+                        pieceSpan[0]
+                    )) || "";
+            }
+
+            const moveStr = `${piece}${movePosition}`;
+            chess.move(moveStr);
+            console.log(`${sideSelector} move: ${moveStr}`);
+        }
+    }
+
+    return chess;
+};
+
+export const getChessGameFEN = async (page: Page): Promise<Chess> => {
     await page.waitForSelector(
         "chess-board > div.piece, div#board > div.piece, #board-board > div.piece"
     );
@@ -67,8 +108,8 @@ export const getMySide = async (page: Page): Promise<Side> => {
 };
 
 export const getOtherSide = (side: Side): Side => {
-    return side == 'w' ? 'b' : 'w';
-}
+    return side == "w" ? "b" : "w";
+};
 
 export const getIsMyTurn = async (page: Page): Promise<boolean> => {
     const sideElements = await page.$$("div.clock-component.clock-bottom");
