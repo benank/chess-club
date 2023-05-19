@@ -1,44 +1,51 @@
-<script>
+<script lang="ts">
+	import type { Side } from '$lib/models';
 	import { gameStateStore } from '$lib/store';
-	import { Chess } from 'chess.js';
+	import { getOtherSide } from '$lib/utils';
+	import { Chess, type Move } from 'chess.js';
 
-	$: chess = new Chess($gameStateStore?.fen);
-	$: history = chess.history();
+	let chess: Chess = new Chess();
+	let history: Move[] = [];
 
-	const getLastOpponentMove = () => {
-		if (history.length == 0) {
-			return '';
+	$: {
+		chess = new Chess();
+		chess.loadPgn($gameStateStore?.pgn ?? '');
+		history = chess.history({ verbose: true });
+	}
+
+	$: myTurn = chess.turn() === $gameStateStore?.mySide;
+
+	const getLastMove = (side: Side) => {
+		for (let i = history.length - 1; i >= 0; i--) {
+			const move = history[i];
+			if (move.color === side) {
+				return move.san;
+			}
 		}
 
-		return history[history.length - 1];
-	};
-
-	const getLastMyMove = () => {
-		if (history.length == 0) {
-			return '';
-		}
-
-		return history[history.length - 1];
+		return '';
 	};
 </script>
 
 <div class="grid">
 	<div class="section">
-		<div class="clock">{$gameStateStore?.time?.opponent ?? '00:00'}</div>
+		<div class={`clock ${!myTurn ? 'active' : ''}`}>
+			{$gameStateStore?.time?.opponent ?? '00:00'}
+		</div>
 		<div class="move">
 			{#if $gameStateStore?.isRecording}
 				<div class="indicator" style="--color: yellow;" />
 			{/if}
-			{getLastOpponentMove()}
+			{getLastMove(getOtherSide($gameStateStore?.mySide))}
 		</div>
 	</div>
 	<div class="section bottom">
-		<div class="clock active">{$gameStateStore?.time?.mine ?? '00:00'}</div>
+		<div class={`clock ${myTurn ? 'active' : ''}`}>{$gameStateStore?.time?.mine ?? '00:00'}</div>
 		<div class="move">
 			{#if $gameStateStore?.isRecording}
 				<div class="indicator" style="--color: red;" />
 			{/if}
-			{getLastMyMove()}
+			{getLastMove($gameStateStore?.mySide)}
 		</div>
 	</div>
 </div>

@@ -39,7 +39,6 @@ export const getChessGamePGN = async (page: Page): Promise<Chess> => {
 
             const moveStr = `${piece}${movePosition}`;
             chess.move(moveStr);
-            console.log(`${sideSelector} move: ${moveStr}`);
         }
     }
 

@@ -15,7 +15,6 @@ class GameManager {
 	private onServerSyncAll(gameStateStr: string) {
 		const gameState = JSON.parse(gameStateStr) as GameState;
 		gameStateStore.set(gameState);
-		console.log(gameState);
 	}
 }
 
