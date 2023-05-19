@@ -66,16 +66,23 @@ class Server {
         this._opponentMoveConfirmed = true;
         this.sync();
     }
-    
+
     @performanceCatch
     private onOnlineBoardSync(gameStateStr: string) {
-        const lastHistoryLength = this._onlineGameState.history().length;
+        const lastHistoryLength = this._onlineGameState.history({
+            verbose: true,
+        }).length;
         const gameState = JSON.parse(gameStateStr) as WizardGameState;
         this._onlineGameState = new Chess();
         this._onlineGameState.loadPgn(gameState.pgn);
         this._log(this._onlineGameState.pgn());
 
-        if (this._onlineGameState.history().length !== lastHistoryLength) {
+        const newHistory = this._onlineGameState.history({ verbose: true });
+
+        if (
+            newHistory.length !== lastHistoryLength &&
+            newHistory[newHistory.length - 1].color !== this._mySide
+        ) {
             this._opponentMoveConfirmed = false;
         }
 
@@ -93,7 +100,10 @@ class Server {
             const moveObject = board.move(move);
             // No errors = valid move
             this._isLastMoveInvalid = false;
-            this._io.emit(SYNC_PHYSICAL_MOVE_TO_ONLINE, JSON.stringify(moveObject));
+            this._io.emit(
+                SYNC_PHYSICAL_MOVE_TO_ONLINE,
+                JSON.stringify(moveObject)
+            );
         } catch (err) {
             console.log(`Invalid move: ${move}`);
             this._isLastMoveInvalid = true;

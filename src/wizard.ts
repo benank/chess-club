@@ -4,17 +4,22 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
 import AnonymizeUAPlugin from "puppeteer-extra-plugin-anonymize-ua";
 import {
-    getChessGameFEN,
     getChessGamePGN,
     getIsMyTurn,
     getMySide,
     getMyTime,
     getOpponentTime,
     getOtherSide,
+    movePiece,
 } from "./wizard-utils";
 import Client from "./client";
-import { SYNC_ONLINE_BOARD_STATE } from "./events";
+import {
+    SYNC_ONLINE_BOARD_STATE,
+    SYNC_PHYSICAL_MOVE_TO_ONLINE,
+} from "./events";
 import { WizardGameState } from "./models";
+import { Move } from "chess.js";
+import { Page } from "puppeteer";
 puppeteer
     .use(StealthPlugin())
     .use(
@@ -27,6 +32,18 @@ puppeteer
 dotenv.config();
 
 const client = new Client("wizard");
+
+let page: Page;
+
+client.on(SYNC_PHYSICAL_MOVE_TO_ONLINE, async (moveStr: string) => {
+    try {
+        const move = JSON.parse(moveStr) as Move;
+        await movePiece(page, move);
+        console.log(`Moved piece from ${move.from} to ${move.to}`);
+    } catch (err) {
+        console.log('Error moving piece:', err);
+    }
+});
 
 (async () => {
     const browser = await puppeteer.launch({
@@ -46,7 +63,7 @@ const client = new Client("wizard");
         // ignoreDefaultArgs: ["--enable-automation"],
         ignoreHTTPSErrors: true,
     });
-    const page = await browser.newPage();
+    page = await browser.newPage();
 
     await page.goto("https://www.chess.com/login");
 

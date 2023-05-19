@@ -1,5 +1,5 @@
-import { Chess, Piece, Square } from "chess.js";
-import { Page } from "puppeteer";
+import { Chess, Move, Piece, Square } from "chess.js";
+import { BoundingBox, ElementHandle, Page } from "puppeteer";
 import { Side } from "./models";
 
 export const numberToLowerCaseLetter = (number: number) =>
@@ -122,4 +122,56 @@ export const getIsMyTurn = async (page: Page): Promise<boolean> => {
     }
 
     return isMyTurn;
+};
+
+export const movePiece = async (page: Page, move: Move) => {
+    const board = (await page.$$(
+        "chess-board, div#board, #board-board, #board-single"
+    ))[0] as ElementHandle<Element>;
+
+    const classNameProp = await board.getProperty("className");
+    const className = await classNameProp.jsonValue();
+    const classes: string[] = className.split(" ");
+    const flipped = classes.includes("flipped");
+
+    const boardBoundingBox = await board.boundingBox();
+
+    if (!boardBoundingBox) {
+        throw Error("Unable to get board bounding box");
+    }
+
+    const boardMap = convertBoundingBoxToBoard(boardBoundingBox, flipped);
+
+    const sourcePosition = boardMap[move.from];
+    const destPosition = boardMap[move.to];
+
+    await page.mouse.move(sourcePosition.x, sourcePosition.y);
+    await page.mouse.down();
+    await page.mouse.move(destPosition.x, destPosition.y);
+    await page.mouse.up();
+};
+
+const convertBoundingBoxToBoard = (
+    bb: BoundingBox,
+    flipped: boolean
+): { [key: string]: { x: number; y: number } } => {
+    const board: { [key: string]: { x: number; y: number } } = {};
+    const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
+    const squareSize = bb.width / 8;
+
+    const startX = bb.x + (flipped ? squareSize * 7 : 0);
+    const startY = bb.y + (flipped ? squareSize * 7 : 0);
+
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+            const position = flipped
+                ? `${letters[7 - col]}${row + 1}`
+                : `${letters[col]}${8 - row}`;
+            const x = startX + col * squareSize + squareSize / 2;
+            const y = startY + row * squareSize + squareSize / 2;
+            board[position] = { x, y };
+        }
+    }
+
+    return board;
 };

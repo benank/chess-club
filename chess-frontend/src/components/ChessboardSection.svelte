@@ -15,7 +15,6 @@
 		position: relative;
 		display: grid;
 		align-items: center;
-		overflow: hidden;
 	}
 
 	div.invalid-move {
@@ -23,7 +22,6 @@
 		place-self: center;
 		color: red;
 		font-size: 60rem;
-		overflow: hidden;
 		font-weight: 500;
 		user-select: none;
 		animation: 3s ease-in-out invalid forwards;

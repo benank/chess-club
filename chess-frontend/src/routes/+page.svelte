@@ -20,5 +20,6 @@
         background-color: black;
         font-family: 'Montserrat Thin';
         color: white;
+        overflow: hidden;
     }
 </style>

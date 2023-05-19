@@ -43,7 +43,7 @@ export default class Client {
         this._socket.emit(event, data);
     }
     
-    on(ev: string, listener: (...args: any[]) => void) {
-        this._socket.on(ev, listener);
+    on(ev: string, listener: any) {
+        this._socket.on(ev, (...args) => listener(args));
     }
 }
