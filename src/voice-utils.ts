@@ -43,4 +43,8 @@ export const WORD_TO_CHESS_MAP = {
     owe: "O",
     dash: "-",
     you: 'e',
+    equal: "=",
+    equals: "=",
+    promote: "=",
+    promotion: "="
 };
