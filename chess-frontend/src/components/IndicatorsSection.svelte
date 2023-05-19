@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Side } from '$lib/models';
-	import { gameStateStore } from '$lib/store';
+	import { attemptedPhysicalMove, gameStateStore } from '$lib/store';
 	import { getLastMove, getOtherSide } from '$lib/utils';
-	import { Chess, type Move } from 'chess.js';
+	import { Chess } from 'chess.js';
+	import { fade, fly } from 'svelte/transition';
 
 	let chess: Chess = new Chess();
 
@@ -26,6 +26,13 @@
 			{getLastMove(chess, getOtherSide($gameStateStore?.mySide))}
 		</div>
 	</div>
+	<div class="section move attemptedMove">
+		{#if $attemptedPhysicalMove}
+			<span transition:fly={{ y: 50, duration: 200 }}>{$attemptedPhysicalMove}</span>
+		{:else}
+			<span />
+		{/if}
+	</div>
 	<div class="section bottom">
 		<div class={`clock ${myTurn ? 'active' : ''}`}>{$gameStateStore?.time?.mine ?? '00:00'}</div>
 		<div class="move">
@@ -40,10 +47,11 @@
 <style>
 	div.grid {
 		display: grid;
-		grid-template-rows: 1fr 1fr;
+		grid-template-rows: 1fr 1fr 1fr;
 		font-size: 5rem;
 		text-align: center;
 		font-weight: 500;
+		overflow: hidden;
 	}
 
 	div.section {
@@ -88,5 +96,12 @@
 		background-color: var(--color);
 		border-radius: 500px;
 		box-shadow: 0 0 10px var(--color), 0 0 30px var(--color);
+	}
+	
+	.attemptedMove {
+		place-content: center;
+		overflow: hidden;
+		font-size: 2.5rem;
+		word-break: break-all;
 	}
 </style>

@@ -15,6 +15,7 @@
 		position: relative;
 		display: grid;
 		align-items: center;
+		overflow: hidden;
 	}
 
 	div.invalid-move {

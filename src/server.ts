@@ -4,10 +4,12 @@ import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import {
     CONFIRM_OPPONENT,
     PHYSICAL_MAKE_MOVE,
+    PHYSICAL_MOVE_MADE,
     SERVER_SYNC_ALL,
     START_RECORDING,
     STOP_RECORDING,
     SYNC_ONLINE_BOARD_STATE,
+    SYNC_PHYSICAL_MOVE_TO_ONLINE,
 } from "./events";
 import { Chess } from "chess.js";
 import { GameState, Side, Time, WizardGameState } from "./models";
@@ -84,15 +86,16 @@ class Server {
 
     @performanceCatch
     private onPhysicalGameMakeMove(move: string) {
+        this._io.emit(PHYSICAL_MOVE_MADE, move);
         const board = new Chess();
         board.loadPgn(this._onlineGameState.pgn());
         try {
-            // TODO: move piece
             const moveObject = board.move(move);
             // No errors = valid move
             this._isLastMoveInvalid = false;
+            this._io.emit(SYNC_PHYSICAL_MOVE_TO_ONLINE, JSON.stringify(moveObject));
         } catch (err) {
-            console.log(`onPhysicalGameMakeMove err: `, err);
+            console.log(`Invalid move: ${move}`);
             this._isLastMoveInvalid = true;
             this.sync();
 

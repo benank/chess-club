@@ -1,7 +1,7 @@
 import Client from './client';
-import { SERVER_SYNC_ALL } from './events';
+import { PHYSICAL_MOVE_MADE, SERVER_SYNC_ALL } from './events';
 import type { GameState } from './models';
-import { gameStateStore } from './store';
+import { attemptedPhysicalMove, gameStateStore } from './store';
 
 class GameManager {
 	private _client: Client;
@@ -10,12 +10,23 @@ class GameManager {
 		this._client = new Client('frontend');
 
 		this._client.on(SERVER_SYNC_ALL, this.onServerSyncAll.bind(this));
+		this._client.on(PHYSICAL_MOVE_MADE, this.onPhysicalMoveMade.bind(this));
 	}
 
 	private onServerSyncAll(gameStateStr: string) {
 		const gameState = JSON.parse(gameStateStr) as GameState;
 		gameStateStore.set(gameState);
 	}
+	
+	// Output from voice command - not confirmed yet
+	private onPhysicalMoveMade(move: string) {
+		attemptedPhysicalMove.set(move);
+		
+		setTimeout(() => {
+			attemptedPhysicalMove.set('');
+		}, 5000);
+	}
+	
 }
 
 const gm = new GameManager();
