@@ -3,6 +3,7 @@ export const WORD_TO_CHESS_MAP = {
     rook: "R",
     knight: "N",
     night: "N",
+    ninety: "Nd",
     queen: "Q",
     king: "K",
     one: "1",

@@ -5,7 +5,7 @@ import fs from "fs";
 import Client from "./client";
 import { WORD_TO_CHESS_MAP } from "./voice-utils";
 import { Hotkey, addKeyHandler } from "./keypress";
-import { PHYSICAL_MAKE_MOVE, START_RECORDING, STOP_RECORDING } from "./events";
+import { CONFIRM_OPPONENT, PHYSICAL_MAKE_MOVE, START_RECORDING, STOP_RECORDING } from "./events";
 dotenv.config();
 
 const FILENAME = "./voice.ogg";
@@ -14,6 +14,10 @@ const client = new Client("voice");
 
 addKeyHandler(Hotkey.START_RECORDING, () => {
     recordAudio();
+});
+
+addKeyHandler(Hotkey.CONFIRM_OPPONENT, () => {
+    client.send(CONFIRM_OPPONENT);
 });
 
 const recordAudio = () => {

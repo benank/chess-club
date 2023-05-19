@@ -2,6 +2,7 @@ import { Server as SocketServer, Socket } from "socket.io";
 import dotenv from "dotenv";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import {
+    CONFIRM_OPPONENT,
     PHYSICAL_MAKE_MOVE,
     SERVER_SYNC_ALL,
     START_RECORDING,
@@ -23,6 +24,7 @@ class Server {
     private _isLastMoveInvalid: boolean = false;
     private _mySide: Side;
     private _time: Time;
+    private _opponentMoveConfirmed: boolean = true;
 
     constructor() {
         this._log = console.log.bind(console, `[Server] `);
@@ -51,17 +53,30 @@ class Server {
                 );
                 socket.on(START_RECORDING, this.onStartRecording.bind(this));
                 socket.on(STOP_RECORDING, this.onStopRecording.bind(this));
+                socket.on(CONFIRM_OPPONENT, this.onConfirmOpponent.bind(this));
             }
         );
         this._log(`Server listening on port ${PORT}...`);
     }
 
     @performanceCatch
+    private onConfirmOpponent() {
+        this._opponentMoveConfirmed = true;
+        this.sync();
+    }
+    
+    @performanceCatch
     private onOnlineBoardSync(gameStateStr: string) {
+        const lastHistoryLength = this._onlineGameState.history().length;
         const gameState = JSON.parse(gameStateStr) as WizardGameState;
         this._onlineGameState = new Chess();
         this._onlineGameState.loadPgn(gameState.pgn);
         this._log(this._onlineGameState.pgn());
+
+        if (this._onlineGameState.history().length !== lastHistoryLength) {
+            this._opponentMoveConfirmed = false;
+        }
+
         this._mySide = gameState.mySide;
         this._time = gameState.time;
         this.sync();
@@ -108,6 +123,7 @@ class Server {
             isLastMoveInvalid: this._isLastMoveInvalid,
             mySide: this._mySide,
             time: this._time,
+            opponentMoveConfirmed: this._opponentMoveConfirmed,
         };
     }
 

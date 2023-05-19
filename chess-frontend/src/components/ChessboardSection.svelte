@@ -1,10 +1,6 @@
 <script lang="ts">
 	import Chessboard from './Chessboard.svelte';
 	import { gameStateStore } from '$lib/store';
-	import { Chess } from 'chess.js';
-
-	$: lastMoveInvalid = $gameStateStore?.isLastMoveInvalid;
-	$: chess = new Chess($gameStateStore?.fen);
 </script>
 
 <div class="container">

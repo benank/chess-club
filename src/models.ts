@@ -6,6 +6,7 @@ export interface GameState {
     isLastMoveInvalid: boolean;
     mySide: Side;
     time: Time;
+    opponentMoveConfirmed: boolean;
 }
 
 export interface Time {

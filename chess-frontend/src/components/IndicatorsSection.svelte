@@ -1,30 +1,17 @@
 <script lang="ts">
 	import type { Side } from '$lib/models';
 	import { gameStateStore } from '$lib/store';
-	import { getOtherSide } from '$lib/utils';
+	import { getLastMove, getOtherSide } from '$lib/utils';
 	import { Chess, type Move } from 'chess.js';
 
 	let chess: Chess = new Chess();
-	let history: Move[] = [];
 
 	$: {
 		chess = new Chess();
 		chess.loadPgn($gameStateStore?.pgn ?? '');
-		history = chess.history({ verbose: true });
 	}
 
 	$: myTurn = chess.turn() === $gameStateStore?.mySide;
-
-	const getLastMove = (side: Side) => {
-		for (let i = history.length - 1; i >= 0; i--) {
-			const move = history[i];
-			if (move.color === side) {
-				return move.san;
-			}
-		}
-
-		return '';
-	};
 </script>
 
 <div class="grid">
@@ -33,10 +20,10 @@
 			{$gameStateStore?.time?.opponent ?? '00:00'}
 		</div>
 		<div class="move">
-			{#if $gameStateStore?.isRecording}
+			{#if !$gameStateStore?.opponentMoveConfirmed}
 				<div class="indicator" style="--color: yellow;" />
 			{/if}
-			{getLastMove(getOtherSide($gameStateStore?.mySide))}
+			{getLastMove(chess, getOtherSide($gameStateStore?.mySide))}
 		</div>
 	</div>
 	<div class="section bottom">
@@ -45,7 +32,7 @@
 			{#if $gameStateStore?.isRecording}
 				<div class="indicator" style="--color: red;" />
 			{/if}
-			{getLastMove($gameStateStore?.mySide)}
+			{getLastMove(chess, $gameStateStore?.mySide)}
 		</div>
 	</div>
 </div>
