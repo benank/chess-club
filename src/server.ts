@@ -78,6 +78,11 @@ class Server {
             console.log(`onPhysicalGameMakeMove err: `, err);
             this._isLastMoveInvalid = true;
             this.sync();
+            
+            setTimeout(() => {
+                this._isLastMoveInvalid = false;
+                this.sync();
+            }, 3000);
         }
     }
 

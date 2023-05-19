@@ -60,6 +60,8 @@ const processAudio = () => {
     } else if (transcript.trim().toLowerCase() == "king side castle") {
         move = "O-O";
     }
+    
+    // TODO: capitalize first letter if not a pawn if on white side (or black?)
 
     console.log(move);
     client.send(PHYSICAL_MAKE_MOVE, move);
