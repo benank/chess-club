@@ -11,18 +11,20 @@
 	import { Chess, type Move } from 'chess.js';
 
 	let chess: Chess = new Chess();
-	let lastMove: Move | undefined;
+	let opponentLastMove: Move | undefined;
 
 	$: {
 		chess = new Chess();
 		chess.loadPgn($gameStateStore?.pgn ?? '');
 	}
 
-	$: lastMove = getLastMoveVerbose(chess, getOtherSide($gameStateStore?.mySide));
+	$: opponentLastMove = getLastMoveVerbose(chess, getOtherSide($gameStateStore?.mySide));
+	$: myLastMove = getLastMoveVerbose(chess, $gameStateStore?.mySide);
 
-	const shouldTileHighlight = (
+	const shouldTileHighlightForMove = (
 		position: string,
-		opponentMoveConfirmed: boolean | undefined
+		opponentMoveConfirmed: boolean | undefined,
+		lastMove: Move | undefined
 	): boolean => {
 		if (opponentMoveConfirmed) {
 			return false;
@@ -36,11 +38,20 @@
 	{#each new Array(64) as _, index}
 		<div
 			class={`space ${getTileColor(index)} ${getChessPositionFromIndex(index)} ${
-				shouldTileHighlight(
+				shouldTileHighlightForMove(
 					getChessPositionFromIndex(index),
-					$gameStateStore?.opponentMoveConfirmed
+					$gameStateStore?.opponentMoveConfirmed,
+					opponentLastMove
 				)
 					? 'highlight'
+					: ''
+			} ${
+				shouldTileHighlightForMove(
+					getChessPositionFromIndex(index),
+					false,
+					myLastMove
+				)
+					? 'green-highlight'
 					: ''
 			}`}
 		/>
@@ -72,6 +83,26 @@
 		background-color: #b58863;
 	}
 
+	div.space.green-highlight {
+		background-color: #1eff00;
+		animation: 1s linear green-highlight forwards;
+	}
+	
+	@keyframes green-highlight {
+		0% {
+			opacity: 0;
+		}
+		10% {
+			opacity: 1;
+		}
+		90% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
+		}
+	}
+	
 	div.space.highlight {
 		background-color: yellow;
 		animation: 1s ease-in-out highlight infinite;
