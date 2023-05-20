@@ -21,7 +21,7 @@
         display: flex;
         flex-direction: row;
         justify-content: space-around;
-		font-size: 3rem;
+		font-size: 2.5rem;
         height: 100%;
         width: 100%;
         align-items: center;
