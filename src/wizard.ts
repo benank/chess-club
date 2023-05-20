@@ -14,6 +14,7 @@ import {
 } from "./wizard-utils";
 import Client from "./client";
 import {
+    START_NEW_GAME_SERVER,
     SYNC_ONLINE_BOARD_STATE,
     SYNC_PHYSICAL_MOVE_TO_ONLINE,
 } from "./events";
@@ -43,6 +44,11 @@ client.on(SYNC_PHYSICAL_MOVE_TO_ONLINE, async (moveStr: string) => {
     } catch (err) {
         console.log('Error moving piece:', err);
     }
+});
+
+client.on(START_NEW_GAME_SERVER, async () => {
+    await page.goto("https://www.chess.com/play/online");
+    await page.click("div.new-game-index-content > div.create-game-component > button");
 });
 
 (async () => {

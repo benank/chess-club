@@ -1,8 +1,10 @@
 import GKM from "gkm-class";
 
 export enum Hotkey {
-    START_RECORDING = "F15", // f15
-    CONFIRM_OPPONENT = "F16", // f16
+    START_RECORDING = "F15",
+    CONFIRM_OPPONENT = "F16",
+    LIST_MOVES = "F17",
+    NEW_GAME = "F18",
 }
 
 const handlers: {
@@ -10,6 +12,8 @@ const handlers: {
 } = {
     [Hotkey.START_RECORDING]: [],
     [Hotkey.CONFIRM_OPPONENT]: [],
+    [Hotkey.LIST_MOVES]: [],
+    [Hotkey.NEW_GAME]: [],
 };
 
 export const addKeyHandler = (key: Hotkey, cb: Function) => {

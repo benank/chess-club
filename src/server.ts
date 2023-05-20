@@ -3,15 +3,19 @@ import dotenv from "dotenv";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import {
     CONFIRM_OPPONENT,
+    LIST_MOVES,
+    PHYSICAL_LIST_MOVES,
     PHYSICAL_MAKE_MOVE,
     PHYSICAL_MOVE_MADE,
     SERVER_SYNC_ALL,
+    START_NEW_GAME,
+    START_NEW_GAME_SERVER,
     START_RECORDING,
     STOP_RECORDING,
     SYNC_ONLINE_BOARD_STATE,
     SYNC_PHYSICAL_MOVE_TO_ONLINE,
 } from "./events";
-import { Chess } from "chess.js";
+import { Chess, Square } from "chess.js";
 import { GameState, Side, Time, WizardGameState } from "./models";
 import { performanceCatch } from "./decorators";
 
@@ -56,6 +60,11 @@ class Server {
                 socket.on(START_RECORDING, this.onStartRecording.bind(this));
                 socket.on(STOP_RECORDING, this.onStopRecording.bind(this));
                 socket.on(CONFIRM_OPPONENT, this.onConfirmOpponent.bind(this));
+                socket.on(START_NEW_GAME, this.onStartNewGame.bind(this));
+                socket.on(
+                    PHYSICAL_LIST_MOVES,
+                    this.onListPhysicalMoves.bind(this)
+                );
             }
         );
         this._log(`Server listening on port ${PORT}...`);
@@ -75,9 +84,12 @@ class Server {
         const gameState = JSON.parse(gameStateStr) as WizardGameState;
         this._onlineGameState = new Chess();
         this._onlineGameState.loadPgn(gameState.pgn);
-        this._log(this._onlineGameState.pgn());
 
         const newHistory = this._onlineGameState.history({ verbose: true });
+
+        if (newHistory.length !== lastHistoryLength) {
+            this._log(this._onlineGameState.pgn());
+        }
 
         if (
             newHistory.length !== lastHistoryLength &&
@@ -126,6 +138,20 @@ class Server {
     private onStopRecording() {
         this._isRecording = false;
         this.sync();
+    }
+
+    @performanceCatch
+    private onStartNewGame() {
+        this._onlineGameState = new Chess();
+        this._io.emit(START_NEW_GAME_SERVER);
+        this.sync();
+    }
+
+    @performanceCatch
+    private onListPhysicalMoves(position: Square) {
+        const moves = this._onlineGameState.moves({ square: position });
+        this._io.emit(LIST_MOVES, JSON.stringify(moves));
+        this._io.emit(PHYSICAL_MOVE_MADE, position);
     }
 
     @performanceCatch

@@ -3,3 +3,4 @@ import type { GameState } from "./models";
 
 export const gameStateStore = writable<GameState>();
 export const attemptedPhysicalMove = writable<string>('');
+export const possibleMovesStore = writable<string[]>([]);

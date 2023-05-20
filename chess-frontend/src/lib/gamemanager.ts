@@ -1,7 +1,7 @@
 import Client from './client';
-import { PHYSICAL_MOVE_MADE, SERVER_SYNC_ALL } from './events';
+import { LIST_MOVES, PHYSICAL_MOVE_MADE, SERVER_SYNC_ALL } from './events';
 import type { GameState } from './models';
-import { attemptedPhysicalMove, gameStateStore } from './store';
+import { attemptedPhysicalMove, gameStateStore, possibleMovesStore } from './store';
 
 class GameManager {
 	private _client: Client;
@@ -11,6 +11,7 @@ class GameManager {
 
 		this._client.on(SERVER_SYNC_ALL, this.onServerSyncAll.bind(this));
 		this._client.on(PHYSICAL_MOVE_MADE, this.onPhysicalMoveMade.bind(this));
+		this._client.on(LIST_MOVES, this.onListMoves.bind(this));
 	}
 
 	private onServerSyncAll(gameStateStr: string) {
@@ -27,6 +28,13 @@ class GameManager {
 		}, 5000);
 	}
 	
+	private onListMoves(moves: string[]) {
+		possibleMovesStore.set(moves);
+		
+		setTimeout(() => {
+			possibleMovesStore.set([]);
+		}, 5000);
+	}
 }
 
 const gm = new GameManager();

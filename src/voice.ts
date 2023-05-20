@@ -5,7 +5,14 @@ import fs from "fs";
 import Client from "./client";
 import { WORD_TO_CHESS_MAP } from "./voice-utils";
 import { Hotkey, addKeyHandler } from "./keypress";
-import { CONFIRM_OPPONENT, PHYSICAL_MAKE_MOVE, START_RECORDING, STOP_RECORDING } from "./events";
+import {
+    CONFIRM_OPPONENT,
+    PHYSICAL_LIST_MOVES,
+    PHYSICAL_MAKE_MOVE,
+    START_NEW_GAME,
+    START_RECORDING,
+    STOP_RECORDING,
+} from "./events";
 dotenv.config();
 
 const FILENAME = "./voice.ogg";
@@ -16,11 +23,19 @@ addKeyHandler(Hotkey.START_RECORDING, () => {
     recordAudio();
 });
 
+addKeyHandler(Hotkey.LIST_MOVES, () => {
+    recordAudio(true);
+});
+
 addKeyHandler(Hotkey.CONFIRM_OPPONENT, () => {
     client.send(CONFIRM_OPPONENT);
 });
 
-const recordAudio = () => {
+addKeyHandler(Hotkey.NEW_GAME, () => {
+    client.send(START_NEW_GAME);
+});
+
+const recordAudio = (isListingMoves = false) => {
     const file = fs.createWriteStream(FILENAME, { encoding: "binary" });
 
     const recording = recorder.record({
@@ -39,7 +54,7 @@ const recordAudio = () => {
         recording.stop();
         file.close();
         client.send(STOP_RECORDING);
-        processAudio();
+        processAudio(isListingMoves);
     }, 4000);
 };
 
@@ -48,7 +63,7 @@ const leopard = new Leopard(accessKey!, {
     modelPath: "models/Chess-leopard-v1.2.0-23-05-17--17-27-47.pv",
 });
 
-const processAudio = () => {
+const processAudio = (isListingMoves = false) => {
     const { transcript, words } = leopard.processFile(FILENAME);
     let move = words
         .map(
@@ -64,10 +79,11 @@ const processAudio = () => {
     } else if (transcript.trim().toLowerCase() == "king side castle") {
         move = "O-O";
     }
-    
-    // TODO: capitalize first letter if not a pawn if on white side (or black?)
 
     console.log(move);
-    client.send(PHYSICAL_MAKE_MOVE, move);
+    client.send(
+        !isListingMoves ? PHYSICAL_MAKE_MOVE : PHYSICAL_LIST_MOVES,
+        move
+    );
     fs.unlinkSync(FILENAME);
 };

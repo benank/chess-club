@@ -1,6 +1,6 @@
 <script lang="ts">
 	import GameManager from '../lib/gamemanager';
-	import { gameStateStore } from '$lib/store';
+	import { gameStateStore, possibleMovesStore } from '$lib/store';
 	import {
 		getChessPositionFromIndex,
 		getLastMove,
@@ -32,6 +32,10 @@
 
 		return position === lastMove?.from || position === lastMove?.to;
 	};
+
+	const shouldTileHighlightPossibleMove = (position: string, moves: string[]) => {
+		return moves.includes(position);
+	};
 </script>
 
 <div class={`chessboard ${$gameStateStore?.mySide === 'b' ? 'flipped' : ''}`}>
@@ -46,12 +50,12 @@
 					? 'highlight'
 					: ''
 			} ${
-				shouldTileHighlightForMove(
-					getChessPositionFromIndex(index),
-					false,
-					myLastMove
-				)
+				shouldTileHighlightForMove(getChessPositionFromIndex(index), false, myLastMove)
 					? 'green-highlight'
+					: ''
+			} ${
+				shouldTileHighlightPossibleMove(getChessPositionFromIndex(index), $possibleMovesStore)
+					? 'lightblue-highlight'
 					: ''
 			}`}
 		/>
@@ -88,7 +92,27 @@
 		background-color: #1eff00;
 		animation: 1s linear green-highlight forwards;
 	}
-	
+
+	div.space.lightblue-highlight {
+		background-color: #00e1ff;
+		animation: 5s linear lightblue-highlight forwards;
+	}
+
+	@keyframes lightblue-highlight {
+		0% {
+			opacity: 0;
+		}
+		5% {
+			opacity: 1;
+		}
+		95% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
+		}
+	}
+
 	@keyframes green-highlight {
 		0% {
 			opacity: 0;
@@ -103,7 +127,7 @@
 			opacity: 0;
 		}
 	}
-	
+
 	div.space.highlight {
 		background-color: yellow;
 		animation: 1s ease-in-out highlight infinite;

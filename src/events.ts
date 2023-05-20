@@ -1,8 +1,12 @@
 export const SYNC_ONLINE_BOARD_STATE = "wizard/sync_online";
 export const PHYSICAL_MAKE_MOVE = "make-move";
+export const PHYSICAL_LIST_MOVES = "list-moves";
+export const LIST_MOVES = "server/list-moves";
 export const START_RECORDING = "start-recording";
 export const STOP_RECORDING = "stop-recording";
 export const CONFIRM_OPPONENT = "confirm-opponent";
 export const SERVER_SYNC_ALL = "server/sync";
 export const SYNC_PHYSICAL_MOVE_TO_ONLINE = "physical-online-move";
 export const PHYSICAL_MOVE_MADE = 'physical-move-made'
+export const START_NEW_GAME = 'start-new-game'
+export const START_NEW_GAME_SERVER = 'server/start-new-game'
