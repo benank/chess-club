@@ -96,9 +96,6 @@ client.on(SYNC_PHYSICAL_MOVE_TO_ONLINE, async (moveStr: string) => {
         try {
             const chess = await getChessGamePGN(page);
             const mySide = await getMySide(page);
-            const sideTurn = (await getIsMyTurn(page))
-                ? mySide
-                : getOtherSide(mySide);
             await getChessGamePGN(page);
             client.send(
                 SYNC_ONLINE_BOARD_STATE,
@@ -114,5 +111,5 @@ client.on(SYNC_PHYSICAL_MOVE_TO_ONLINE, async (moveStr: string) => {
         } catch (err) {
             console.log(`Error when refreshing chess game:`, err);
         }
-    }, 1000);
+    }, 250);
 })();

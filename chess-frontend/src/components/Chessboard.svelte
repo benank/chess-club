@@ -68,6 +68,7 @@
 		display: grid;
 		grid-template-columns: repeat(8, 1fr);
 		grid-template-rows: repeat(8, 1fr);
+		background-color: rgba(255, 255, 255, 0.5); /* Add spotlight to chess board */
 	}
 
 	div.chessboard.flipped {

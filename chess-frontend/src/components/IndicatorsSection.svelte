@@ -20,7 +20,7 @@
 			{$gameStateStore?.time?.opponent ?? '00:00'}
 		</div>
 		<div class="move">
-			{#if !$gameStateStore?.opponentMoveConfirmed}
+			{#if !($gameStateStore?.opponentMoveConfirmed ?? true)}
 				<div class="indicator" style="--color: yellow;" />
 			{/if}
 			{getLastMove(chess, getOtherSide($gameStateStore?.mySide))}
@@ -51,7 +51,6 @@
 		font-size: 5rem;
 		text-align: center;
 		font-weight: 500;
-		overflow: hidden;
 	}
 
 	div.section {
