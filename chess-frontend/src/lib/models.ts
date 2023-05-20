@@ -19,3 +19,5 @@ export interface WizardGameState {
 	time: Time;
 	mySide: Side;
 }
+
+export type LabelType = 'numbers' | 'letters';

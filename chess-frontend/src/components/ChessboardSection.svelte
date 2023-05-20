@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Chessboard from './Chessboard.svelte';
 	import { gameStateStore } from '$lib/store';
+	import Labels from './Labels.svelte';
 </script>
 
 <div class="container">
@@ -16,7 +17,7 @@
 		display: grid;
 		align-items: center;
 	}
-
+	
 	div.invalid-move {
 		position: absolute;
 		place-self: center;

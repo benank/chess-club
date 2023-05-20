@@ -9,6 +9,7 @@
 		getTileColor
 	} from '$lib/utils';
 	import { Chess, type Move } from 'chess.js';
+	import Labels from './Labels.svelte';
 
 	let chess: Chess = new Chess();
 	let opponentLastMove: Move | undefined;
@@ -20,6 +21,7 @@
 
 	$: opponentLastMove = getLastMoveVerbose(chess, getOtherSide($gameStateStore?.mySide));
 	$: myLastMove = getLastMoveVerbose(chess, $gameStateStore?.mySide);
+	$: reversedLabels = $gameStateStore?.mySide === 'b';
 
 	const shouldTileHighlightForMove = (
 		position: string,
@@ -60,14 +62,27 @@
 			}`}
 		/>
 	{/each}
+	<div class='labels left'>
+		<Labels reversed={!reversedLabels}/>
+	</div>
+	<div class='labels right'>
+		<Labels reversed={!reversedLabels}/>
+	</div>
+	<div class='labels bottom'>
+		<Labels type={'letters'} vertical={false} reversed={reversedLabels} />
+	</div>
+	<div class='labels top'>
+		<Labels type={'letters'} vertical={false} reversed={reversedLabels} />
+	</div>
 </div>
 
 <style>
 	div.chessboard {
+		position: relative;
 		place-self: center;
 		width: 100%;
-		max-width: 90vh;
-		max-height: 90vh;
+		max-width: 85vh;
+		max-height: 85vh;
 		aspect-ratio: 1 / 1;
 		display: grid;
 		grid-template-columns: repeat(8, 1fr);
@@ -79,6 +94,35 @@
 		transform: rotate(180deg);
 	}
 
+	div.labels {
+		position: absolute;
+		top: 0;
+		height: 100%;
+	}
+	
+	div.labels.left {
+		left: -3rem;
+	}
+	
+	div.labels.right {
+		right: -3rem;
+	}
+
+	div.labels.top {
+		height: fit-content;
+		width: 100%;
+		left: 0;
+		top: -3.5rem;
+	}
+	
+	div.labels.bottom {
+		height: fit-content;
+		width: 100%;
+		left: 0;
+		bottom: -3.5rem;
+		top: unset;
+	}
+	
 	div.space {
 		background-color: #f0d9b5;
 		opacity: 0; /* Change to 1 to see the board for testing */
