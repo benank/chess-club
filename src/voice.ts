@@ -72,11 +72,12 @@ const processAudio = (isListingMoves = false) => {
         )
         .join("")
         .replace("88", "a8")
-        .replace("aa", "a8");
+        .replace("aa", "a8"); // This COULD be a problem, but will likely not be
 
-    if (transcript.trim().toLowerCase() == "queen side castle") {
+    const lowerTranscript = transcript.trim().toLowerCase();
+    if (lowerTranscript == "queen side castle" || lowerTranscript == "castle queen side") {
         move = "O-O-O";
-    } else if (transcript.trim().toLowerCase() == "king side castle") {
+    } else if (lowerTranscript == "king side castle" || lowerTranscript == "castle king side") {
         move = "O-O";
     }
 
