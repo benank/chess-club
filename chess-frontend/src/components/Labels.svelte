@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { LabelType } from '$lib/models';
 
+    export let small = false;
     export let reversed = true;
     export let vertical = true;
 	export let type: LabelType = 'numbers';
@@ -10,7 +11,7 @@
 			: ['1', '2', '3', '4', '5', '6', '7', '8'];
 </script>
 
-<div class={`label-container ${vertical ? 'vertical' : ''} ${reversed ? 'reversed' : ''}`}>
+<div class={`label-container ${vertical ? 'vertical' : ''} ${reversed ? 'reversed' : ''} ${small ? 'small' : ''}`}>
 	{#each values as v}
 		<div>{v}</div>
 	{/each}
@@ -25,6 +26,11 @@
         height: 100%;
         width: 100%;
         align-items: center;
+        text-shadow: 0 0 2px rgba(0, 0, 0, 0.5), 0 0 6px rgba(0, 0, 0, 0.5);
+    }
+    
+    div.label-container.small {
+        font-size: 1.25rem;
     }
     
     div.label-container.reversed {

@@ -75,7 +75,7 @@
 
 	div.clock.active {
 		background-color: rgba(0, 255, 0, 0.15);
-		border: 4px solid rgba(0, 255, 0, 1);
+		outline: 4px solid rgba(0, 255, 0, 1);
 	}
 
 	div.move {
