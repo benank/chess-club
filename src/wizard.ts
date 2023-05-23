@@ -102,7 +102,6 @@ client.on(START_NEW_GAME_SERVER, async () => {
         try {
             const chess = await getChessGamePGN(page);
             const mySide = await getMySide(page);
-            await getChessGamePGN(page);
             client.send(
                 SYNC_ONLINE_BOARD_STATE,
                 JSON.stringify(<WizardGameState>{

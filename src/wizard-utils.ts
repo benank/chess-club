@@ -141,6 +141,8 @@ export const movePiece = async (page: Page, move: Move) => {
     }
 
     const boardMap = convertBoundingBoxToBoard(boardBoundingBox, flipped);
+    console.log(boardMap)
+    console.log(`flipped: ${flipped}`)
 
     const sourcePosition = boardMap[move.from];
     const destPosition = boardMap[move.to];
@@ -159,8 +161,8 @@ const convertBoundingBoxToBoard = (
     const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
     const squareSize = bb.width / 8;
 
-    const startX = bb.x + (flipped ? squareSize * 7 : 0);
-    const startY = bb.y + (flipped ? squareSize * 7 : 0);
+    const startX = bb.x;
+    const startY = bb.y;
 
     for (let row = 0; row < 8; row++) {
         for (let col = 0; col < 8; col++) {

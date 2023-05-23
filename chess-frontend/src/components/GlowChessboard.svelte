@@ -12,10 +12,12 @@
 	import Labels from './Labels.svelte';
 
 	let chess: Chess = new Chess();
-    
+
 	$: {
 		chess = new Chess();
-		chess.loadPgn($gameStateStore?.pgn ?? '');
+		if ($gameStateStore?.pgn) {
+			chess.loadPgn($gameStateStore?.pgn ?? '');
+		}
 	}
 
 	const indexToPieceImage = (index: number) => {
@@ -30,8 +32,11 @@
 
 	$: reversed = $gameStateStore?.mySide === 'b';
 	$: myTurn = chess.turn() === $gameStateStore?.mySide;
-    let pieceArray: number[];
-    $: pieceArray = new Array(64), chess;
+	let pieceArray: any[] = new Array(64).fill(null);
+	$: {
+		chess,
+		pieceArray = pieceArray.map((_, index) => indexToPieceImage(index));
+	}
 </script>
 
 <title>Chess Glow Board</title>
@@ -40,10 +45,12 @@
 		<div class={`space ${getTileColor(index)} ${getChessPositionFromIndex(index)}`} />
 	{/each}
 	<div class={`pieces-container ${reversed ? 'flipped' : ''}`}>
-		{#each pieceArray as _, index}
+		{#each pieceArray as src, index}
 			<img
-				class={`piece ${!!indexToPieceImage(index) ? '' : 'hidden'} ${reversed ? 'flipped' : ''} ${chess ? '' : ''}`}
-				src={indexToPieceImage(index)}
+				class={`piece ${!!src ? '' : 'hidden'} ${reversed ? 'flipped' : ''} ${
+					chess ? '' : ''
+				}`}
+				src={src}
 				alt=""
 			/>
 		{/each}
@@ -54,13 +61,17 @@
 	<div class="labels bottom">
 		<Labels type={'letters'} vertical={false} {reversed} small={true} />
 	</div>
-	<div class={`clock top ${!myTurn ? 'active' : ''}`}>{$gameStateStore?.time?.opponent ?? '00:00'}</div>
-	<div class={`clock bottom ${myTurn ? 'active' : ''}`}>{$gameStateStore?.time?.mine ?? '00:00'}</div>
+	<div class={`clock top ${!myTurn ? 'active' : ''}`}>
+		{$gameStateStore?.time?.opponent ?? '00:00'}
+	</div>
+	<div class={`clock bottom ${myTurn ? 'active' : ''}`}>
+		{$gameStateStore?.time?.mine ?? '00:00'}
+	</div>
 </div>
 
 <style>
 	div.chessboard {
-        --glow-color: red;
+		--glow-color: red;
 		position: relative;
 		place-self: center;
 		width: 100%;
@@ -71,9 +82,9 @@
 		grid-template-columns: repeat(8, 1fr);
 		grid-template-rows: repeat(8, 1fr);
 		isolation: isolate;
-        font-weight: 500;
+		font-weight: 500;
 	}
-    
+
 	div.pieces-container {
 		position: absolute;
 		width: 100%;

@@ -78,29 +78,33 @@ class Server {
 
     @performanceCatch
     private onOnlineBoardSync(gameStateStr: string) {
-        const lastHistoryLength = this._onlineGameState.history({
-            verbose: true,
-        }).length;
-        const gameState = JSON.parse(gameStateStr) as WizardGameState;
-        this._onlineGameState = new Chess();
-        this._onlineGameState.loadPgn(gameState.pgn);
+        try {
+            const lastHistoryLength = this._onlineGameState.history({
+                verbose: true,
+            }).length;
+            const gameState = JSON.parse(gameStateStr) as WizardGameState;
+            this._onlineGameState = new Chess();
+            this._onlineGameState.loadPgn(gameState.pgn);
 
-        const newHistory = this._onlineGameState.history({ verbose: true });
+            const newHistory = this._onlineGameState.history({ verbose: true });
 
-        if (newHistory.length !== lastHistoryLength) {
-            this._log(this._onlineGameState.pgn());
+            if (newHistory.length !== lastHistoryLength) {
+                this._log(this._onlineGameState.pgn());
+            }
+
+            if (
+                newHistory.length !== lastHistoryLength &&
+                newHistory[newHistory.length - 1]?.color !== this._mySide
+            ) {
+                this._opponentMoveConfirmed = false;
+            }
+
+            this._mySide = gameState.mySide;
+            this._time = gameState.time;
+            this.sync();
+        } catch (err) {
+            console.log(`onOnlineBoardSync error:`, err);
         }
-
-        if (
-            newHistory.length !== lastHistoryLength &&
-            newHistory[newHistory.length - 1]?.color !== this._mySide
-        ) {
-            this._opponentMoveConfirmed = false;
-        }
-
-        this._mySide = gameState.mySide;
-        this._time = gameState.time;
-        this.sync();
     }
 
     @performanceCatch
