@@ -1,7 +1,7 @@
 import GKM from "gkm-class";
 
 export enum Hotkey {
-    START_RECORDING = "F15",
+    START_RECORDING = "F21",
     CONFIRM_OPPONENT = "F16",
     LIST_MOVES = "F17",
     NEW_GAME = "F18",

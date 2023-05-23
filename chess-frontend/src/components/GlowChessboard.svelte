@@ -12,7 +12,7 @@
 	import Labels from './Labels.svelte';
 
 	let chess: Chess = new Chess();
-
+    
 	$: {
 		chess = new Chess();
 		chess.loadPgn($gameStateStore?.pgn ?? '');
@@ -30,19 +30,21 @@
 
 	$: reversed = $gameStateStore?.mySide === 'b';
 	$: myTurn = chess.turn() === $gameStateStore?.mySide;
+    let pieceArray: number[];
+    $: pieceArray = new Array(64), chess;
 </script>
 
 <title>Chess Glow Board</title>
 <div class={`chessboard`}>
-	{#each new Array(64) as _, index}
+	{#each pieceArray as _, index}
 		<div class={`space ${getTileColor(index)} ${getChessPositionFromIndex(index)}`} />
 	{/each}
 	<div class={`pieces-container ${reversed ? 'flipped' : ''}`}>
-		{#each new Array(64) as _, index}
+		{#each pieceArray as _, index}
 			<img
-				class={`piece ${!!indexToPieceImage(index) ? '' : 'hidden'} ${reversed ? 'flipped' : ''}`}
+				class={`piece ${!!indexToPieceImage(index) ? '' : 'hidden'} ${reversed ? 'flipped' : ''} ${chess ? '' : ''}`}
 				src={indexToPieceImage(index)}
-				alt="piece"
+				alt=""
 			/>
 		{/each}
 	</div>
@@ -52,8 +54,8 @@
 	<div class="labels bottom">
 		<Labels type={'letters'} vertical={false} {reversed} small={true} />
 	</div>
-	<div class={`clock top ${!myTurn ? 'active' : ''}`}>00:00</div>
-	<div class={`clock bottom ${myTurn ? 'active' : ''}`}>00:00</div>
+	<div class={`clock top ${!myTurn ? 'active' : ''}`}>{$gameStateStore?.time?.opponent ?? '00:00'}</div>
+	<div class={`clock bottom ${myTurn ? 'active' : ''}`}>{$gameStateStore?.time?.mine ?? '00:00'}</div>
 </div>
 
 <style>

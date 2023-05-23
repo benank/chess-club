@@ -88,7 +88,7 @@
 		display: grid;
 		grid-template-columns: repeat(8, 1fr);
 		grid-template-rows: repeat(8, 1fr);
-		background-color: rgba(255, 255, 255, 0.5); /* Add spotlight to chess board */
+		background-color: rgba(255, 255, 255, 0.3); /* Add spotlight to chess board */
 	}
 
 	div.chessboard.flipped {
@@ -99,6 +99,10 @@
 		position: absolute;
 		top: 0;
 		height: 100%;
+	}
+	
+	div.chessboard.flipped div.labels {
+		transform: rotate(180deg);
 	}
 
 	div.labels.left {
@@ -134,12 +138,12 @@
 	}
 
 	div.space.green-highlight {
-		background-color: #1eff00;
+		background-color: rgb(0, 60, 255);
 		animation: 1s linear green-highlight forwards;
 	}
 
 	div.space.lightblue-highlight {
-		background-color: #00e1ff;
+		background-color: #a200ff;
 		animation: 5s linear lightblue-highlight forwards;
 	}
 

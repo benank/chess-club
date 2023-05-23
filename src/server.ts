@@ -93,7 +93,7 @@ class Server {
 
         if (
             newHistory.length !== lastHistoryLength &&
-            newHistory[newHistory.length - 1].color !== this._mySide
+            newHistory[newHistory.length - 1]?.color !== this._mySide
         ) {
             this._opponentMoveConfirmed = false;
         }

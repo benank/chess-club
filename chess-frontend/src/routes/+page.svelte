@@ -19,7 +19,7 @@
         width: 90vw;
         height: 100vh;
         display: grid;
-        grid-template-columns: 1fr 3fr 1fr;
+        grid-template-columns: 1fr 2.2fr 1fr;
         background-color: black;
         font-family: 'Montserrat Thin';
         color: white;

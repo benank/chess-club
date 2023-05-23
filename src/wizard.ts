@@ -117,5 +117,5 @@ client.on(START_NEW_GAME_SERVER, async () => {
         } catch (err) {
             console.log(`Error when refreshing chess game:`, err);
         }
-    }, 250);
+    }, 1000);
 })();
