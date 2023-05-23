@@ -141,8 +141,6 @@ export const movePiece = async (page: Page, move: Move) => {
     }
 
     const boardMap = convertBoundingBoxToBoard(boardBoundingBox, flipped);
-    console.log(boardMap)
-    console.log(`flipped: ${flipped}`)
 
     const sourcePosition = boardMap[move.from];
     const destPosition = boardMap[move.to];

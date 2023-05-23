@@ -86,7 +86,7 @@
 
 	div.indicator {
 		position: absolute;
-		left: 0.5rem;
+		right: 0.5rem;
 		top: 50%;
 		transform: translateY(-50%);
 		width: 2.5rem;

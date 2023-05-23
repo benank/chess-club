@@ -8,7 +8,7 @@
 		getOtherSide,
 		getTileColor
 	} from '$lib/utils';
-	import { Chess, type Move } from 'chess.js';
+	import { Chess, type Move, type Square } from 'chess.js';
 	import Labels from './Labels.svelte';
 
 	let chess: Chess = new Chess();
@@ -34,6 +34,20 @@
 
 		return position === lastMove?.from || position === lastMove?.to;
 	};
+	
+	const shouldHighlightCheck = (positionStr: string): boolean => {
+		if (!chess.inCheck()) {
+			return false;
+		}
+		
+		const turn = chess.turn();
+		const position = chess.get(positionStr as Square);
+		if (position.color == turn && position.type == 'k') {
+			return true;
+		}
+		
+		return false;
+	}
 
 	const shouldTileHighlightPossibleMove = (position: string, moves: string[]) => {
 		return moves.includes(position);
@@ -59,7 +73,7 @@
 				shouldTileHighlightPossibleMove(getChessPositionFromIndex(index), $possibleMovesStore)
 					? 'lightblue-highlight'
 					: ''
-			}`}
+			} ${shouldHighlightCheck(getChessPositionFromIndex(index)) ? 'check' : ''}`}
 		/>
 	{/each}
 	<div class="labels left">
@@ -180,6 +194,11 @@
 	div.space.highlight {
 		background-color: yellow;
 		animation: 1s ease-in-out highlight infinite;
+	}
+
+	div.space.check {
+		background-color: red;
+		animation: 0.5s ease-in-out highlight infinite;
 	}
 
 	@keyframes highlight {
