@@ -6,14 +6,17 @@
 </script>
 
 <main>
-    <ChatSection />
-    <ChessboardSection />
     <IndicatorsSection />
+    <ChessboardSection />
+    <ChatSection />
 </main>
 
 <style>
     main {
-        width: 100vw;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90vw;
         height: 100vh;
         display: grid;
         grid-template-columns: 1fr 3fr 1fr;
@@ -21,5 +24,6 @@
         font-family: 'Montserrat Thin';
         color: white;
         overflow: hidden;
+        /* border: 2px solid red; */
     }
 </style>

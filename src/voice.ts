@@ -54,7 +54,12 @@ const recordAudio = (isListingMoves = false) => {
         recording.stop();
         file.close();
         client.send(STOP_RECORDING);
-        processAudio(isListingMoves);
+        
+        try {
+            processAudio(isListingMoves);
+        } catch (err) {
+            console.log(`Process audio error:`, err);
+        }
     }, 4000);
 };
 

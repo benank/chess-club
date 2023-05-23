@@ -62,16 +62,16 @@
 			}`}
 		/>
 	{/each}
-	<div class='labels left'>
-		<Labels reversed={!reversedLabels}/>
+	<div class="labels left">
+		<Labels reversed={!reversedLabels} />
 	</div>
-	<div class='labels right'>
-		<Labels reversed={!reversedLabels}/>
+	<div class="labels right">
+		<Labels reversed={!reversedLabels} />
 	</div>
-	<div class='labels bottom'>
+	<div class="labels bottom">
 		<Labels type={'letters'} vertical={false} reversed={reversedLabels} />
 	</div>
-	<div class='labels top'>
+	<div class="labels top">
 		<Labels type={'letters'} vertical={false} reversed={reversedLabels} />
 	</div>
 </div>
@@ -81,8 +81,9 @@
 		position: relative;
 		place-self: center;
 		width: 100%;
-		max-width: 85vh;
-		max-height: 85vh;
+		--size: 76.5vh;
+		max-width: var(--size);
+		max-height: var(--size);
 		aspect-ratio: 1 / 1;
 		display: grid;
 		grid-template-columns: repeat(8, 1fr);
@@ -99,11 +100,11 @@
 		top: 0;
 		height: 100%;
 	}
-	
+
 	div.labels.left {
 		left: -3rem;
 	}
-	
+
 	div.labels.right {
 		right: -3rem;
 	}
@@ -114,7 +115,7 @@
 		left: 0;
 		top: -3.5rem;
 	}
-	
+
 	div.labels.bottom {
 		height: fit-content;
 		width: 100%;
@@ -122,7 +123,7 @@
 		bottom: -3.5rem;
 		top: unset;
 	}
-	
+
 	div.space {
 		background-color: #f0d9b5;
 		opacity: 0; /* Change to 1 to see the board for testing */
