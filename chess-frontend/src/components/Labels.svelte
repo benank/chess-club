@@ -26,7 +26,7 @@
         height: 100%;
         width: 100%;
         align-items: center;
-        text-shadow: 0 0 2px rgba(0, 0, 0, 0.5), 0 0 6px rgba(0, 0, 0, 0.5);
+        text-shadow: 0 0 2px rgba(0, 0, 0, 1), 0 0 6px rgba(0, 0, 0, 0.5);
     }
     
     div.label-container.small {

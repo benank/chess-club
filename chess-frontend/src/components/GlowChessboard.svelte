@@ -150,12 +150,13 @@
 
 	div.labels.left {
 		left: 0;
+		top: -2rem;
 	}
 
 	div.labels.bottom {
 		height: fit-content;
 		width: 100%;
-		right: -1.5rem;
+		right: -2.4rem;
 		bottom: 0;
 		top: unset;
 	}
