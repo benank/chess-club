@@ -2,6 +2,8 @@
 
 Sync physical chess to digital chess.
 
+![image](https://github.com/benank/chess-club/assets/8016617/246e862e-ad60-4b9a-827f-df04baabc944)
+
 This allows you to use a physical chess board (nothing special) and play online chess on [chess.com](https://chess.com). It does this using 4 parts:
  - A main server that syncs data between components
  - A automated version of Chrome that moves your pieces for you and obtains the current game state (eg. where all the pieces are)
