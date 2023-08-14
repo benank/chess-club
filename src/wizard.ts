@@ -118,3 +118,11 @@ client.on(START_NEW_GAME_SERVER, async () => {
         }
     }, 1000);
 })();
+
+
+/*
+A few errors that need addressing in the future:
+
+Error when refreshing chess game: Error: Invalid move: Qb1=+
+Error after promoting a pawn to a queen
+*/

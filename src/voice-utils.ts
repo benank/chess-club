@@ -49,4 +49,6 @@ export const WORD_TO_CHESS_MAP = {
     promotion: "=",
     take: "x",
     capture: "x",
+    brook: 'R',
+    brooke: 'R',
 };

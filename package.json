@@ -1,12 +1,12 @@
 {
-  "name": "wizard",
+  "name": "chess-club",
   "version": "1.0.0",
   "scripts": {
     "start:server": "npx vite-node src/server.ts",
     "start:wizard": "npx vite-node src/wizard.ts",
-    "start:tron": "npx vite-node src/tron.ts",
     "start:voice": "npx vite-node src/voice.ts",
-    "start:frontend": "cd chess-frontend && npm run dev"
+    "start:frontend": "cd chess-frontend && npm run dev",
+    "postinstall": "cd chess-frontend && npm install"
   },
   "author": "benank",
   "dependencies": {
