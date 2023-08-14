@@ -42,10 +42,12 @@ To ensure that you can make things move along using your numpad, bind these keys
 
 ## Video of example setup
 
-In the video below, I share my livestream setup using this software. I'm able to play chess with anyone on the internet using my physical chess board. No need for screens! I'm also using a remapped wireless numpad to control specific aspects of the stream and game. I'm using a projector mounted above 
+In the video below, I share my livestream setup using this software. I'm able to play chess with anyone on the internet using my physical chess board. No need for screens! I'm also using a remapped wireless numpad to control specific aspects of the stream and game. I'm using a projector mounted above my chess board to project the game board on top of it with the timers and move indicators. 
+
+All this was done in a week, so if it looks a little scrappy, it was! 😅
 
 [![Chess Club Setup](https://img.youtube.com/vi/UcF7Ya1CMQY/0.jpg)](https://www.youtube.com/watch?v=UcF7Ya1CMQY)
 
-Below, you can view my first livestream using this setup. While there were a couple bugs, it still worked pretty well (although it takes a while to complete a move!😅).
+Below, you can view my first livestream using this setup. While there were a couple bugs, it still worked pretty well (although it takes a while to complete a move!).
 
 [![Chess Club Lviestream](https://img.youtube.com/vi/GuRKL34j9Vw/0.jpg)](https://youtu.be/GuRKL34j9Vw?t=339)
